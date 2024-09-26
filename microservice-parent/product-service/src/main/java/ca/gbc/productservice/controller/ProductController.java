@@ -32,8 +32,9 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
-    @PutMapping
-    //@ResponseStatus(HttpStatus.NO_CONTENT )
+    @PutMapping("/{productId}")
+    //@ResponseStatus(HttpStatus.NO_CONTENT ) You can return a status code in the logic
+    //as well as it has been done in this method
     //http:localhost:8079/api/product/jlqdfk
     public ResponseEntity<?> updateProduct(@PathVariable("productId") String productId,
                                            @RequestBody ProductRequest productRequest){
@@ -45,7 +46,7 @@ public class ProductController {
         return new ResponseEntity<>(header, HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{productId}")
     public ResponseEntity<?> deleteProduct(@PathVariable("productId") String productId){
         productService.deleteProduct(productId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
