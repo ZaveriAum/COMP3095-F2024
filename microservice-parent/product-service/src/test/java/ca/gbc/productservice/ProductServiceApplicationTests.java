@@ -25,7 +25,7 @@ class ProductServiceApplicationTests {
 
     @BeforeEach
     void setup(){
-        RestAssured.baseURI = "https://localhost";
+        RestAssured.baseURI = "http://localhost";
         RestAssured.port = port;
     }
 
@@ -37,13 +37,12 @@ class ProductServiceApplicationTests {
     void createProductTest(){
         String requestBody = """
                 {
-                    "name":"Samsung TV",
-                    "description":"Samsung LCD TV 2016 Model",
-                    "price":"2000"
+                 "name":"Samsung TV",
+                 "description" : "Samsung TV - Model 2024",
+                 "price" : "2000"
                 }
                 """;
-
-        //BDD - 0 Behavioural Driven Development(Given, When, Then)
+        //BDD -0  Behavioural Driven Development
         RestAssured.given()
                 .contentType("application/json")
                 .body(requestBody)
@@ -53,9 +52,9 @@ class ProductServiceApplicationTests {
                 .log().all()
                 .statusCode(201)
                 .body("id", Matchers.notNullValue())
-                .body("name", Matchers.equalTo("Samsung TV"))
-                .body("description", Matchers.equalTo("Samsung LCD TV 2016 MODEL"))
-                .body("price", Matchers.equalTo(2000));
+                .body("name",Matchers.equalTo("Samsung TV"))
+                .body("description",Matchers.equalTo("Samsung TV - Model 2024"))
+                .body("price",Matchers.equalTo(2000));
     }
 
     @Test
@@ -79,7 +78,7 @@ class ProductServiceApplicationTests {
                 .statusCode(201)
                 .body("id", Matchers.notNullValue())
                 .body("name", Matchers.equalTo("Samsung TV"))
-                .body("description", Matchers.equalTo("Samsung LCD TV 2016 MODEL"))
+                .body("description", Matchers.equalTo("Samsung LCD TV 2016 Model"))
                 .body("price", Matchers.equalTo(2000));
 
         RestAssured.given()
@@ -91,7 +90,7 @@ class ProductServiceApplicationTests {
                 .statusCode(200)
                 .body("size()", Matchers.greaterThan(0))
                 .body("[0].name", Matchers.equalTo("Samsung TV"))
-                .body("[0].description", Matchers.equalTo("Samsung LCD TV 2016 MODEL"))
+                .body("[0].description", Matchers.equalTo("Samsung LCD TV 2016 Model"))
                 .body("[0].price", Matchers.equalTo(2000));
 
     }

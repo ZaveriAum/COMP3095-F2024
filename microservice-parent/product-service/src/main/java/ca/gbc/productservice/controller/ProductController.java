@@ -6,10 +6,7 @@ import ca.gbc.productservice.model.Product;
 import ca.gbc.productservice.service.ProductService;
 import io.micrometer.core.ipc.http.HttpSender;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,8 +19,16 @@ public class ProductController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createProduct(@RequestBody ProductRequest productRequest){
-        productService.createProduct(productRequest);
+    public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest productRequest){
+        ProductResponse createProduct = productService.createProduct(productRequest);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("location", "/api/product" + createProduct.id());
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(createProduct);
     }
 
     @GetMapping
