@@ -1,3 +1,10 @@
+#----------------------------------------------------------
+# 1. docker-compose -p microservice-comp3095-ecommerce -f docker-compose.yml up -d
+#  - This command will start containers in detached mode without rebuilding the images (if they exist)
+# 2. docker-compose -p microservice-comp3095-ecommerce -f docker-compose.yml up -d --build
+#  - This command forces the rebuild of images, even if they already exist, before starting the containers.
+#----------------------------------------------------------
+
 version: '3.9'
 
 services:
@@ -18,16 +25,39 @@ services:
       - spring
 
   mongodb:
-    image: mongo
-    container_name: mongodb
+    image: mongo:latest
     ports:
       - "27017:27017"
     environment:
-      - MONGO_INIT_ROOT_USERNAME=admin
-      - MONGO_INIT_ROOT_PASSWORD=admin
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
     volumes:
       - ./data/mongo/products:/data/db
-      - ./init/mongo/docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-    command: mongo -auth
+      - ./init/mongo/docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+    container_name: mongodb
+#    restart: unless-stopped
+#    command: mongo -auth
     networks:
       - spring
+
+  mongo-express:
+    image: mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+    container_name: mongo-express-ps
+    depends_on:
+      - mongodb
+    networks:
+      - spring
+
+volumes:
+  mongo-db:
+    driver: local
+
+networks:
+  spring:
+    driver: bridge
