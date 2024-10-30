@@ -33,7 +33,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=password
     volumes:
       - ./data/mongo/products:/data/db
-      - ./init/mongo/docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      - ./init/mongo/docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     container_name: mongodb
 #    restart: unless-stopped
 #    command: mongo -auth
