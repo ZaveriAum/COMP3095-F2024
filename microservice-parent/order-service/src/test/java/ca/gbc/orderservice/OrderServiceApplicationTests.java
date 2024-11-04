@@ -1,5 +1,6 @@
 package ca.gbc.orderservice;
 
+import io.restassured.RestAssured;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
