@@ -1,5 +1,6 @@
 package ca.gbc.orderservice;
 
+import ca.gbc.orderservice.stub.InventoryClientStub;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,6 +42,11 @@ class OrderServiceApplicationTests {
                 "quantity":16
                 }
                 """;
+
+        // Week 10
+        // Mock a call to inventory service
+        InventoryClientStub.stubInventoryCall("apple_tablet_2024", 10);
+
         var responseBody = RestAssured.given()
                 .contentType("application/json")
                 .body(order)

@@ -3,9 +3,8 @@
 #--------------
 FROM gradle:8-jdk22-alpine AS builder
 
-COPY --chown=gradle:gradle . /home/gradle/src
-
 WORKDIR /home/gradle/src
+COPY . .
 
 RUN gradle build -x test
 
@@ -21,7 +20,7 @@ RUN mkdir /app
 COPY --from=builder /home/gradle/src/build/libs/*.jar /app/order-service.jar
 
 ENV POSTGRES_USER=admin \
-    POSTGRES_PASSWORD=password
+    POSTGRES_PWD=password
 
 EXPOSE 8082
 
