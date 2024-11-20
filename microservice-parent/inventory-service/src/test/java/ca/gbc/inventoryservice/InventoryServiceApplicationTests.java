@@ -10,6 +10,13 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.context.annotation.Import;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import static org.hamcrest.Matchers.equalTo;
+
 @Import(TestcontainersConfiguration.class)
 @SpringBootTest(webEnvironment =  SpringBootTest.WebEnvironment.RANDOM_PORT)
 class InventoryServiceApplicationTests {
@@ -33,6 +40,29 @@ class InventoryServiceApplicationTests {
 	@Test
 	void shouldBeInStockTest() {
 
+		RestAssured.given()
+				.queryParam("skuCode", "SKU001")
+				.queryParam("quantity", 1)
+				.when()
+				.get("/api/inventory")
+				.then()
+				.log().all()
+				.statusCode(200)
+				.body(equalTo("true"));
+	}
+
+	@Test
+	void shouldNotBeInStockTest() {
+
+		RestAssured.given()
+				.queryParam("skuCode", "SKU001")
+				.queryParam("quantity", 101)
+				.when()
+				.get("/api/inventory")
+				.then()
+				.log().all()
+				.statusCode(200)
+				.body(equalTo("false"));
 	}
 
 }

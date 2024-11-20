@@ -30,7 +30,7 @@ public class Routes {
         log.info("Initializing product-service route with the url: {}", productServiceUrl);
 
         return GatewayRouterFunctions.route("product_service")
-                .route(RequestPredicates.path("/api/product"),request->{
+                .route(RequestPredicates.path("/api/product/**"),request->{
                     log.info("Received Request for product-service: {}", request.uri());
                    try{
                        ServerResponse response = HandlerFunctions.http(productServiceUrl).handle(request);

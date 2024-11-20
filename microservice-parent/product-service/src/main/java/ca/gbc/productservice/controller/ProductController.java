@@ -40,7 +40,7 @@ public class ProductController {
     @PutMapping("/{productId}")
     //@ResponseStatus(HttpStatus.NO_CONTENT ) You can return a status code in the logic
     //as well as it has been done in this method
-    //http:localhost:8079/api/product/jlqdfk
+    //http:localhost:8084/api/product/jlqdfk
     public ResponseEntity<?> updateProduct(@PathVariable("productId") String productId,
                                            @RequestBody ProductRequest productRequest){
         String updatedProductId = productService.updateProduct(productId, productRequest);
