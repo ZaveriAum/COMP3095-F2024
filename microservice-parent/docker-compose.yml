@@ -41,7 +41,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./local-docker-files/keycloak/realms/:/opt/keycloak/data/import
+      - ./local-docker-file/keycloak/realms/:/opt/keycloak/data/import
     depends_on:
       - postgres-keycloak
     networks:
@@ -93,7 +93,7 @@ services:
       - PGDATA=/data/postgres
     volumes:
       - ./data/inventory:/var/Lib/postgresql/data
-#      - ./init/inventory/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init/inventory/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - spring
 
@@ -128,7 +128,7 @@ services:
       - PGDATA=/data/postgres
     volumes:
       - ./data/order:/var/Lib/postgresql/data
-#      - ./init/order/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init/order/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - spring
 
