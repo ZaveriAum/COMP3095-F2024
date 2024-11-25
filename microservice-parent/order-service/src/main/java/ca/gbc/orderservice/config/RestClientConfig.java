@@ -16,7 +16,7 @@ public class RestClientConfig {
 
     @Bean
     public InventoryClient inventoryClient(){
-
+ 
         RestClient restClient = RestClient.builder()
                 .baseUrl(inventory_service_url)
                 .build();
