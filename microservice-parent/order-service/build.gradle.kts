@@ -41,7 +41,6 @@ dependencies {
     implementation("org.springframework.kafka:spring-kafka:3.3.0")
     testImplementation("org.springframework.kafka:spring-kafka-test:3.3.0")
     testImplementation("org.testcontainers:kafka:1.20.4")
-
     // Week 10 added two new dependencies
     implementation("org.springframework.cloud:spring-cloud-starter-contract-stub-runner")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")

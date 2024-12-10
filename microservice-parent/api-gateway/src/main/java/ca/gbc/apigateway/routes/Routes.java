@@ -30,92 +30,81 @@ public class Routes {
     private String inventoryServiceUrl;
 
     @Bean
-    public RouterFunction<ServerResponse> productServiceRoute(){
-
-        log.info("Initializing product-service route with the url: {}", productServiceUrl);
+    public RouterFunction<ServerResponse> productServicesRoute(){
+        log.info("Initializing product service route with URL: {}",productServiceUrl);
 
         return route("product_service")
-                .route(RequestPredicates.path("/api/product/**"),request->{
-                    log.info("Received Request for product-service: {}", request.uri());
+                .route(RequestPredicates.path("/api/product/**"), request->{
+                    log.info("Received request for product service {}",request.uri());
                     return HandlerFunctions.http(productServiceUrl).handle(request);
-                    })
+
+                })
                 .filter(CircuitBreakerFilterFunctions
                         .circuitBreaker("productServiceCircuitBreaker", URI.create("forward:/fallbackRoute")))
                 .build();
     }
-
     @Bean
     public RouterFunction<ServerResponse> orderServiceRoute(){
+        log.info("Initializing order service route with URL: {}",orderServiceUrl);
 
-        log.info("Initializing order-service route with the url: {}", orderServiceUrl);
-
-        return route("order_service")
-                .route(RequestPredicates.path("/api/order"),request->{
-                    log.info("Received Request for order-service: {}", request.uri());
-                    try{
-                        ServerResponse response = HandlerFunctions.http(orderServiceUrl).handle(request);
-                        log.info("Response status: {}", response.statusCode());
-                        return response;
-                    }catch (Exception e){
-                        log.error("Error occurred while routing to: {}", e.getMessage(), e);
-                        return ServerResponse.status(500).body("Error occurred when routing to order-service");
-                    }
+        return route("order").route(RequestPredicates.path("/api/order"), request->{
+                    log.info("Received request for order service {}",request.uri());
+                    return HandlerFunctions.http(orderServiceUrl).handle(request);
                 })
+                .filter(CircuitBreakerFilterFunctions
+                        .circuitBreaker("orderServiceCircuitBreaker", URI.create("forward:/fallbackRoute")))
                 .build();
     }
 
     @Bean
     public RouterFunction<ServerResponse> inventoryServiceRoute(){
+        log.info("Initializing order service route with URL: {}",inventoryServiceUrl);
 
-        log.info("Initializing inventory-service route with the url: {}", inventoryServiceUrl);
+        return route("inventory").route(RequestPredicates.path("/api/inventory"), request->{
+                    log.info("Received request for inventory service {}",request.uri());
+                    return HandlerFunctions.http(inventoryServiceUrl).handle(request);
 
-        return route("inventory_service")
-                .route(RequestPredicates.path("/api/inventory"),request->{
-                    log.info("Received Request for inventory-service: {}", request.uri());
-                    try{
-                        ServerResponse response = HandlerFunctions.http(inventoryServiceUrl).handle(request);
-                        log.info("Response status: {}", response.statusCode());
-                        return response;
-                    }catch (Exception e){
-                        log.error("Error occurred while routing to: {}", e.getMessage(), e);
-                        return ServerResponse.status(500).body("Error occurred when routing to inventory-service");
-                    }
                 })
+                .filter(CircuitBreakerFilterFunctions
+                        .circuitBreaker("inventoryServiceCircuitBreaker", URI.create("forward:/fallbackRoute")))
                 .build();
     }
-
     @Bean
     public RouterFunction<ServerResponse> productServiceSwaggerRoute(){
-
         return route("product_service_swagger")
-                .route(RequestPredicates.path("/aggregate/product-service/v3/api-docs"),
+                .route(RequestPredicates
+                                .path("/aggregate/product-service/v3/api-docs"),
                         HandlerFunctions.http(productServiceUrl))
                 .filter(setPath("/api-docs"))
+                .filter(CircuitBreakerFilterFunctions
+                        .circuitBreaker("productSwaggerCircuitBreaker", URI.create("forward:/fallbackRoute")))
                 .build();
     }
-
     @Bean
     public RouterFunction<ServerResponse> orderServiceSwaggerRoute(){
         return route("order_service_swagger")
-                .route(RequestPredicates.path("/aggregate/order-service/v3/api-docs"),
+                .route(RequestPredicates
+                                .path("/aggregate/order-service/v3/api-docs"),
                         HandlerFunctions.http(orderServiceUrl))
-                .filter(setPath("/api-docs"))
-                .build();
-
+                .filter(CircuitBreakerFilterFunctions
+                        .circuitBreaker("orderSwaggerCircuitBreaker", URI.create("forward:/fallbackRoute")))
+                .filter(setPath("/api-docs")).build();
     }
-
     @Bean
     public RouterFunction<ServerResponse> inventoryServiceSwaggerRoute(){
         return route("inventory_service_swagger")
-                .route(RequestPredicates.path("/aggregate/inventory-service/v3/api-docs"),
+                .route(RequestPredicates
+                                .path("/aggregate/inventory-service/v3/api-docs"),
                         HandlerFunctions.http(inventoryServiceUrl))
                 .filter(setPath("/api-docs"))
+                .filter(CircuitBreakerFilterFunctions
+                        .circuitBreaker("inventorySwaggerCircuitBreaker", URI.create("forward:/fallbackRoute")))
                 .build();
     }
 
     @Bean
     public RouterFunction<ServerResponse> fallbackRoute(){
-        return route("fallbackRoute")
+        return GatewayRouterFunctions.route("fallbackRoute")
                 .route(RequestPredicates.all(),
                         request->ServerResponse.status(HttpStatus.SERVICE_UNAVAILABLE)
                 .body("Service is Temporarily Unavailable, please try again later")).build();
